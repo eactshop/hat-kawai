@@ -8,25 +8,6 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@700;800&display=swap"
         rel="stylesheet">
-    <!-- Meta Pixel Code -->
-    <script>
-        !function (f, b, e, v, n, t, s) {
-            if (f.fbq) return; n = f.fbq = function () {
-                n.callMethod ?
-                n.callMethod.apply(n, arguments) : n.queue.push(arguments)
-            };
-            if (!f._fbq) f._fbq = n; n.push = n; n.loaded = !0; n.version = '2.0';
-            n.queue = []; t = b.createElement(e); t.async = !0;
-            t.src = v; s = b.getElementsByTagName(e)[0];
-            s.parentNode.insertBefore(t, s)
-        }(window, document, 'script',
-            'https://connect.facebook.net/en_US/fbevents.js');
-        fbq('init', '965035723049791');
-        fbq('track', 'PageView');
-    </script>
-    <noscript><img height="1" width="1" style="display:none"
-            src="https://www.facebook.com/tr?id=965035723049791&ev=PageView&noscript=1" /></noscript>
-    <!-- End Meta Pixel Code -->
     <style>
         :root {
             --primary: #ff2d55;
@@ -1207,6 +1188,85 @@
 
 <body>
 
+    <!-- FAKE PURCHASE TOAST -->
+    <div id="purchaseToast" style="
+        position: fixed;
+        bottom: 130px;
+        left: 50%;
+        transform: translateX(-50%) translateY(20px);
+        z-index: 999;
+        background: #fff;
+        border-radius: 14px;
+        padding: 10px 14px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+        max-width: 320px;
+        width: calc(100% - 32px);
+        opacity: 0;
+        transition: opacity 0.4s ease, transform 0.4s ease;
+        pointer-events: none;
+        border-left: 4px solid #00c853;
+    ">
+        <div style="font-size:1.6rem;flex-shrink:0" id="toastEmoji">🛍️</div>
+        <div style="flex:1;min-width:0">
+            <div style="font-size:.78rem;font-weight:800;color:#1a1a1a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" id="toastName"></div>
+            <div style="font-size:.72rem;color:#666;margin-top:1px" id="toastMsg"></div>
+        </div>
+        <div style="font-size:.65rem;color:#aaa;flex-shrink:0" id="toastTime"></div>
+    </div>
+    <style>
+        #purchaseToast.show {
+            opacity: 1 !important;
+            transform: translateX(-50%) translateY(0) !important;
+        }
+    </style>
+    <script>
+        (function(){
+            const names = [
+                'Nguyễn T. Hương','Trần Văn Minh','Lê T. Lan','Phạm Văn Đức','Hoàng T. Mai',
+                'Vũ Thị Nga','Đặng Văn Hùng','Bùi T. Thảo','Ngô Văn Tuấn','Đinh T. Hoa',
+                'Lý Văn Nam','Trịnh T. Linh','Phan Văn Khoa','Dương T. Yến','Hồ Văn Long',
+                'Nguyễn T. Quỳnh','Trần Văn Tài','Lê T. Nhung','Phạm Văn Sơn','Hoàng T. Thu'
+            ];
+            const cities = ['Hà Nội','TP.HCM','Đà Nẵng','Hải Phòng','Cần Thơ','Huế','Nha Trang','Biên Hòa','Vũng Tàu','Buôn Ma Thuột'];
+            const products = [
+                { text: 'vừa mua Hạt Kawai Cat 1,5kg', emoji: '🐱' },
+                { text: 'vừa mua Hạt Kawai Cat 3kg + 10 súp', emoji: '🎁' },
+                { text: 'vừa mua Hạt Kawai Cat 5kg combo', emoji: '⭐' },
+                { text: 'vừa đặt 2 túi Kawai Cat 1,5kg', emoji: '🛒' },
+                { text: 'vừa mua Hạt Kawai Cat 3kg', emoji: '🐾' },
+            ];
+
+            const toast = document.getElementById('purchaseToast');
+
+            function timeAgo() {
+                const secs = Math.floor(Math.random() * 31) + 30;
+                return secs < 60 ? secs + 's trước' : '1 phút trước';
+            }
+
+            function showToast() {
+                const name = names[Math.floor(Math.random() * names.length)];
+                const city = cities[Math.floor(Math.random() * cities.length)];
+                const prod = products[Math.floor(Math.random() * products.length)];
+
+                document.getElementById('toastEmoji').textContent = prod.emoji;
+                document.getElementById('toastName').textContent = name + ' (' + city + ')';
+                document.getElementById('toastMsg').textContent = prod.text;
+                document.getElementById('toastTime').textContent = timeAgo();
+
+                toast.classList.add('show');
+                setTimeout(function(){ toast.classList.remove('show'); }, 3500);
+            }
+
+            setTimeout(function loop() {
+                showToast();
+                setTimeout(loop, 8000 + Math.random() * 10000);
+            }, 3000);
+        })();
+    </script>
+
     <!-- TOP NAV -->
     <div class="topnav">
         <div class="logo">🛒 TIPET SHOP VN</div>
@@ -1325,8 +1385,7 @@
             </div>
             <!-- WEIGHT VARIANTS -->
             <div class="variant-section">
-                <div class="variant-label">⚖️ Phân loại: <span class="selected-variant" id="selectedVariantLabel">1,5kg
-                        —
+                <div class="variant-label">⚖️ Phân loại: <span class="selected-variant" id="selectedVariantLabel">1,5kg —
                         149.000₫</span></div>
                 <div class="variant-options">
                     <button class="variant-btn active" onclick="selectVariant(this, '1,5kg', 149000)">
@@ -1651,6 +1710,51 @@
 
             </div><!-- end .main -->
 
+            <!-- LIVE VISITOR COUNTER -->
+            <div id="visitorBadge" style="
+                position: fixed;
+                bottom: 72px;
+                left: 50%;
+                transform: translateX(-50%);
+                z-index: 98;
+                background: rgba(20,20,20,0.82);
+                color: #fff;
+                font-size: .78rem;
+                font-weight: 700;
+                border-radius: 20px;
+                padding: 6px 14px;
+                display: flex;
+                align-items: center;
+                gap: 7px;
+                box-shadow: 0 2px 12px rgba(0,0,0,.18);
+                pointer-events: none;
+                white-space: nowrap;
+                backdrop-filter: blur(4px);
+            ">
+                <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#00e676;box-shadow:0 0 6px #00e676;animation:visBlink 1.2s ease-in-out infinite;flex-shrink:0"></span>
+                <span id="visitorCount">--</span> người đang xem sản phẩm này
+            </div>
+            <style>
+                @keyframes visBlink {
+                    0%,100%{opacity:1;box-shadow:0 0 6px #00e676}
+                    50%{opacity:.4;box-shadow:0 0 2px #00e676}
+                }
+            </style>
+            <script>
+                (function(){
+                    const BASE = 975;
+                    const RANGE = 25;
+                    let current = BASE + Math.floor(Math.random() * RANGE);
+                    function update(){
+                        const delta = Math.random() < 0.5 ? 1 : -1;
+                        current = Math.min(1000, Math.max(950, current + delta));
+                        document.getElementById('visitorCount').textContent = current;
+                    }
+                    update();
+                    setInterval(update, 4000 + Math.random() * 3000);
+                })();
+            </script>
+
             <!-- BOTTOM BAR -->
             <div class="bottom-bar">
                 <button class="btn-cart" onclick="addToCart()">🛒 Thêm vào giỏ</button>
@@ -1700,8 +1804,7 @@
                         <label>⚖️ Phân loại: <span id="orderSelectedVariantLabel"
                                 style="color:var(--primary);font-weight:800"></span></label>
                         <div class="variant-options" style="margin-top:8px">
-                            <button class="variant-btn" id="ovBtn1,5kg"
-                                onclick="selectOrderVariant(this, '1,5kg', 149000)">
+                            <button class="variant-btn" id="ovBtn1,5kg" onclick="selectOrderVariant(this, '1,5kg', 149000)">
                                 <span class="v-weight">1,5kg</span>
                                 <span class="v-price">149.000₫ + ship 20k</span>
                             </button>
@@ -2029,7 +2132,7 @@
 
                     // Chờ 1200ms để đảm bảo request được gửi trước khi redirect
                     setTimeout(() => {
-                        window.location.href = 'https://eactshop.github.io/kawai-thanh-cong/';
+                        window.location.href = 'https://eactshop.github.io/hat-mix-thanh-cong/';
                     }, 1200);
                 }
 
